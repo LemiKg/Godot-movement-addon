@@ -54,7 +54,11 @@ script = ExtResource("3_input")
 
 [node name="CameraSystem" type="Node" parent="Systems"]
 script = ExtResource("4_camera")
+default_mode = "first_person"
+pitch_limit_up = 50.0
 strafe_mode_enabled = true
+first_person_height = -1.0
+first_person_fov = 100.0
 
 [node name="StateMachine" type="Node" parent="Systems"]
 script = ExtResource("5_state")
