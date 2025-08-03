@@ -89,6 +89,7 @@ func _ready() -> void:
 	if _input_handler:
 		_input_handler.camera_mode_toggle_requested.connect(_toggle_camera_mode)
 		_input_handler.camera_input.connect(_handle_camera_input)
+		_input_handler.zoom_requested.connect(_handle_zoom_input)
 
 func _physics_process(delta: float) -> void:
 	if not _current_mode or not _spring_arm or not _camera:
@@ -230,6 +231,11 @@ func _handle_camera_input(mouse_delta: Vector2) -> void:
 	var pitch_limit_down_rad = deg_to_rad(pitch_limit_down) # Positive for looking down
 	_accumulated_pitch = clamp(_accumulated_pitch, pitch_limit_up_rad, pitch_limit_down_rad)
 	camera_pivot.rotation.x = _accumulated_pitch
+
+func _handle_zoom_input(zoom_direction: float) -> void:
+	# Only handle zoom for camera modes that support it
+	if _current_mode and _current_mode.has_method("handle_zoom"):
+		_current_mode.handle_zoom(zoom_direction)
 
 # Legacy compatibility methods for existing code
 func get_camera() -> Camera3D:

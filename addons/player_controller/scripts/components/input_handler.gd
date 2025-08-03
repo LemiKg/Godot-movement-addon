@@ -14,6 +14,7 @@ signal camera_input(mouse_delta: Vector2)
 signal interact_requested
 signal mouse_mode_toggle_requested
 signal camera_mode_toggle_requested
+signal zoom_requested(zoom_direction: float)
 
 @export_group("Input Settings")
 @export var mouse_sensitivity := 2.0: ## Mouse sensitivity multiplier. Higher values = faster camera movement
@@ -48,6 +49,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 		
 	_handle_camera_input(event)
+	_handle_zoom_input(event)
 
 func _process(_delta: float) -> void:
 	# Don't process input in the editor
@@ -121,6 +123,20 @@ func _handle_camera_input(event: InputEvent) -> void:
 		# event.screen_relative gives mouse movement in screen coordinates
 		var mouse_delta = event.screen_relative * mouse_sensitivity * 0.001 # Scale down for reasonable values
 		camera_input.emit(mouse_delta)
+
+func _handle_zoom_input(event: InputEvent) -> void:
+	# Handle mouse wheel zoom
+	if event is InputEventMouseButton and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+			zoom_requested.emit(-1.0) # Zoom in
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+			zoom_requested.emit(1.0) # Zoom out
+	
+	# Handle keyboard zoom (optional)
+	if InputMap.has_action("zoom_in") and Input.is_action_just_pressed("zoom_in"):
+		zoom_requested.emit(-1.0)
+	elif InputMap.has_action("zoom_out") and Input.is_action_just_pressed("zoom_out"):
+		zoom_requested.emit(1.0)
 
 func get_movement_input() -> Vector2:
 	# Check if all movement actions exist before using them

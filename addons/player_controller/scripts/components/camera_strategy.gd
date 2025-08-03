@@ -23,3 +23,8 @@ func on_mode_activated(spring_arm: SpringArm3D) -> void:
 func on_mode_deactivated(spring_arm: SpringArm3D) -> void:
 	# Optional: Called when switching away from this mode
 	pass
+
+func handle_zoom(zoom_direction: float) -> void:
+	# Optional: Handle zoom input for camera modes that support it
+	# zoom_direction: -1.0 for zoom in, 1.0 for zoom out
+	pass
