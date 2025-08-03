@@ -50,20 +50,20 @@ func initialize(player: CharacterBody3D, camera: Camera3D, camera_system: Node =
 	_connect_events()
 
 func _setup_strategies() -> void:
-	# Load all movement strategies (we'll implement these incrementally)
-	_strategies["walk"] = preload("res://addons/player_controller/strategies/movement/walk_strategy.gd").new()
-	_strategies["run"] = preload("res://addons/player_controller/strategies/movement/run_strategy.gd").new()
-	_strategies["sprint"] = preload("res://addons/player_controller/strategies/movement/sprint_strategy.gd").new()
-	_strategies["crouch"] = preload("res://addons/player_controller/strategies/movement/crouch_strategy.gd").new()
-	_strategies["jump"] = preload("res://addons/player_controller/strategies/movement/jump_strategy.gd").new()
-	_strategies["fall"] = preload("res://addons/player_controller/strategies/movement/fall_strategy.gd").new()
+	# Load all movement strategies using constants
+	_strategies[MovementConstants.STRATEGY_WALK] = preload("res://addons/player_controller/strategies/movement/walk_strategy.gd").new()
+	_strategies[MovementConstants.STRATEGY_RUN] = preload("res://addons/player_controller/strategies/movement/run_strategy.gd").new()
+	_strategies[MovementConstants.STRATEGY_SPRINT] = preload("res://addons/player_controller/strategies/movement/sprint_strategy.gd").new()
+	_strategies[MovementConstants.STRATEGY_CROUCH] = preload("res://addons/player_controller/strategies/movement/crouch_strategy.gd").new()
+	_strategies[MovementConstants.STRATEGY_JUMP] = preload("res://addons/player_controller/strategies/movement/jump_strategy.gd").new()
+	_strategies[MovementConstants.STRATEGY_FALL] = preload("res://addons/player_controller/strategies/movement/fall_strategy.gd").new()
 	
 	# Initialize all strategies
 	for strategy in _strategies.values():
 		strategy.initialize(_player, _camera)
 	
 	# Set default strategy
-	set_strategy("walk")
+	set_strategy(MovementConstants.STRATEGY_WALK)
 
 func _connect_events() -> void:
 	if EnhancedEventBus.instance:
@@ -110,7 +110,7 @@ func _update_timers(delta: float) -> void:
 	
 	# Update coyote time (same as original)
 	if _player.is_on_floor():
-		_coyote_time_timer = 0.2 # COYOTE_TIME_DEFAULT
+		_coyote_time_timer = MovementConstants.COYOTE_TIME_DEFAULT
 	else:
 		_coyote_time_timer -= delta
 
@@ -150,14 +150,14 @@ func _handle_rotation(input_direction: Vector2, delta: float) -> void:
 		skin.global_rotation.y = lerp_angle(skin.global_rotation.y, target_angle, rotation_speed * delta)
 	
 	# Normal mode: rotate based on movement direction (same as original)
-	elif input_direction.length() > 0.2:
+	elif input_direction.length() > MovementConstants.INPUT_THRESHOLD:
 		var forward = - _camera.global_basis.z.normalized()
 		var right = _camera.global_basis.x.normalized()
 		var move_direction = forward * input_direction.y + right * input_direction.x
 		move_direction.y = 0.0
 		move_direction = move_direction.normalized()
 		
-		if move_direction.length() > 0.2:
+		if move_direction.length() > MovementConstants.INPUT_THRESHOLD:
 			var target_angle = Vector3.BACK.signed_angle_to(move_direction, Vector3.UP)
 			skin.global_rotation.y = lerp_angle(skin.global_rotation.y, target_angle, rotation_speed * delta)
 
@@ -178,7 +178,7 @@ func _is_strafe_mode_enabled() -> bool:
 	return false
 
 func request_jump() -> void:
-	_jump_buffer_timer = 0.1 # JUMP_BUFFER_DEFAULT
+	_jump_buffer_timer = MovementConstants.JUMP_BUFFER_DEFAULT
 	if EnhancedEventBus.instance:
 		EnhancedEventBus.instance.jump_buffered.emit()
 
@@ -190,12 +190,12 @@ func can_jump() -> bool:
 
 func execute_jump() -> void:
 	if _player and _player.is_on_floor(): # Simplified check
-		_player.velocity.y = 4.5 # JUMP_VELOCITY
+		_player.velocity.y = MovementConstants.JUMP_VELOCITY
 		_jump_buffer_timer = 0
 		_coyote_time_timer = 0
 		
 		if EnhancedEventBus.instance:
-			EnhancedEventBus.instance.jump_initiated.emit(4.5)
+			EnhancedEventBus.instance.jump_initiated.emit(MovementConstants.JUMP_VELOCITY)
 
 func get_current_strategy() -> MovementStrategy:
 	return _current_strategy
@@ -203,42 +203,20 @@ func get_current_strategy() -> MovementStrategy:
 func get_movement_speed() -> float:
 	if _current_strategy:
 		return _current_strategy.speed
-	return 5.0 # Default walk speed
+	return MovementConstants.WALK_SPEED # Default walk speed
 
 func set_movement_state(state: String) -> void:
-	# Map states to movement strategies
-	var strategy_map = {
-		"idle": "walk",
-		"walking": "walk",
-		"running": "run",
-		"sprint": "sprint",
-		"crouch_idle": "crouch",
-		"crouch_move": "crouch",
-		"jumping": "jump",
-		"falling": "fall",
-		"landing": "walk"
-	}
-	
-	if state in strategy_map:
-		set_strategy(strategy_map[state])
+	# Use the helper class for cleaner mapping
+	if MovementConstants.StateStrategyMapper.has_strategy_for_state(state):
+		var strategy = MovementConstants.StateStrategyMapper.get_strategy_for_state(state)
+		set_strategy(strategy)
 
 # Event handlers
 func _on_state_changed(old_state: String, new_state: String) -> void:
-	# Map states to movement strategies
-	var strategy_map = {
-		"idle": "walk",
-		"walking": "walk",
-		"running": "run",
-		"sprint": "sprint",
-		"crouch_idle": "crouch",
-		"crouch_move": "crouch",
-		"jumping": "jump",
-		"falling": "fall",
-		"landing": "walk"
-	}
-	
-	if new_state in strategy_map:
-		set_strategy(strategy_map[new_state])
+	# Use the helper class for cleaner mapping
+	if MovementConstants.StateStrategyMapper.has_strategy_for_state(new_state):
+		var strategy = MovementConstants.StateStrategyMapper.get_strategy_for_state(new_state)
+		set_strategy(strategy)
 
 func _on_jump_pressed() -> void:
 	request_jump()

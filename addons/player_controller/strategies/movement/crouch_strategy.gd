@@ -5,13 +5,13 @@ extends MovementStrategy
 ## Implements the exact same crouch calculations as the original system
 
 func _init():
-	speed = 3.0 # CROUCH_SPEED from original
-	acceleration = 20.0
+	speed = MovementConstants.CROUCH_SPEED
+	acceleration = MovementConstants.ACCELERATION_DEFAULT
 	can_jump = false # Cannot jump while crouching
 	air_control = false
 
 func get_strategy_name() -> String:
-	return "crouch"
+	return MovementConstants.STRATEGY_CROUCH
 
 func handle_rotation(input_direction: Vector2, delta: float) -> void:
 	if not player or not camera:
@@ -36,10 +36,10 @@ func handle_rotation(input_direction: Vector2, delta: float) -> void:
 func can_transition_to(state_name: String) -> bool:
 	# Crouch can transition to idle and walking
 	return state_name in [
-		"idle",
-		"walking",
-		"crouch_idle",
-		"crouch_move"
+		MovementConstants.STATE_IDLE,
+		MovementConstants.STATE_WALKING,
+		MovementConstants.STATE_CROUCH_IDLE,
+		MovementConstants.STATE_CROUCH_MOVE
 	]
 
 func on_enter() -> void:

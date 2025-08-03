@@ -7,9 +7,9 @@ extends Node
 signal state_changed(old_state: String, new_state: String)
 
 @export_group("State Configuration")
-@export var default_state: String = "idle"
+@export var default_state: String = MovementConstants.STATE_IDLE
 @export var debug_state_transitions: bool = false
-@export var landing_duration: float = 0.2
+@export var landing_duration: float = MovementConstants.LANDING_DURATION
 
 @export_group("Advanced Settings")
 @export var allow_state_overrides: bool = false
@@ -22,17 +22,57 @@ var _player: CharacterBody3D
 var _movement_system: Node
 var _input_system: Node
 
-# State transition rules (same logic as original)
+# State transition rules using constants
 var _valid_transitions: Dictionary = {
-	"idle": ["walking", "running", "sprint", "jumping", "crouch_idle"],
-	"walking": ["idle", "running", "sprint", "jumping", "crouch_idle", "crouch_move"],
-	"running": ["idle", "walking", "sprint", "jumping"],
-	"sprint": ["idle", "walking", "running", "jumping"],
-	"crouch_idle": ["idle", "walking", "crouch_move"],
-	"crouch_move": ["crouch_idle", "idle", "walking"],
-	"jumping": ["falling", "landing"],
-	"falling": ["landing"],
-	"landing": ["idle", "walking", "running"]
+	MovementConstants.STATE_IDLE: [
+		MovementConstants.STATE_WALKING,
+		MovementConstants.STATE_RUNNING,
+		MovementConstants.STATE_SPRINT,
+		MovementConstants.STATE_JUMPING,
+		MovementConstants.STATE_CROUCH_IDLE
+	],
+	MovementConstants.STATE_WALKING: [
+		MovementConstants.STATE_IDLE,
+		MovementConstants.STATE_RUNNING,
+		MovementConstants.STATE_SPRINT,
+		MovementConstants.STATE_JUMPING,
+		MovementConstants.STATE_CROUCH_IDLE,
+		MovementConstants.STATE_CROUCH_MOVE
+	],
+	MovementConstants.STATE_RUNNING: [
+		MovementConstants.STATE_IDLE,
+		MovementConstants.STATE_WALKING,
+		MovementConstants.STATE_SPRINT,
+		MovementConstants.STATE_JUMPING
+	],
+	MovementConstants.STATE_SPRINT: [
+		MovementConstants.STATE_IDLE,
+		MovementConstants.STATE_WALKING,
+		MovementConstants.STATE_RUNNING,
+		MovementConstants.STATE_JUMPING
+	],
+	MovementConstants.STATE_CROUCH_IDLE: [
+		MovementConstants.STATE_IDLE,
+		MovementConstants.STATE_WALKING,
+		MovementConstants.STATE_CROUCH_MOVE
+	],
+	MovementConstants.STATE_CROUCH_MOVE: [
+		MovementConstants.STATE_CROUCH_IDLE,
+		MovementConstants.STATE_IDLE,
+		MovementConstants.STATE_WALKING
+	],
+	MovementConstants.STATE_JUMPING: [
+		MovementConstants.STATE_FALLING,
+		MovementConstants.STATE_LANDING
+	],
+	MovementConstants.STATE_FALLING: [
+		MovementConstants.STATE_LANDING
+	],
+	MovementConstants.STATE_LANDING: [
+		MovementConstants.STATE_IDLE,
+		MovementConstants.STATE_WALKING,
+		MovementConstants.STATE_RUNNING
+	]
 }
 
 func initialize(player: CharacterBody3D, movement_system: Node, input_system: Node = null) -> void:

@@ -44,11 +44,10 @@ addons/
     │   ├── service_locator.gd # Dependency injection
     │   └── constants.gd       # Configuration constants
     ├── systems/               # Main system components
-    │   ├── enhanced_movement_system.gd  # Advanced movement calculations
-    │   ├── movement_system.gd           # Core movement logic
-    │   ├── state_machine.gd             # State management
-    │   ├── input_system.gd              # Input handling
-    │   └── camera_system.gd             # Camera management
+    │   ├── movement_system.gd       # Core movement logic with strategy pattern
+    │   ├── state_machine.gd         # State management
+    │   ├── input_system.gd          # Input handling
+    │   └── camera_system.gd         # Camera management
     ├── strategies/            # Strategy pattern implementations
     │   ├── movement/          # Movement behavior strategies
     │   └── camera/            # Camera behavior strategies
@@ -390,7 +389,7 @@ The enhanced system provides excellent performance characteristics:
 ### Core Components
 
 - **EnhancedPlayerController**: Main controller managing all systems
-- **MovementSystem**: Handles physics-based movement calculations
+- **MovementSystem**: Handles physics-based movement calculations using strategy pattern
 - **CameraSystem**: Manages camera behavior with strategy pattern
 - **StateMachine**: Controls movement states and transitions
 - **InputSystem**: Processes and distributes input events

@@ -5,13 +5,13 @@ extends MovementStrategy
 ## Implements the exact same walking calculations as the original system
 
 func _init():
-	speed = 5.0 # MovementConstants.WALK_SPEED
-	acceleration = 20.0 # MovementConstants.ACCELERATION_DEFAULT
+	speed = MovementConstants.WALK_SPEED
+	acceleration = MovementConstants.ACCELERATION_DEFAULT
 	can_jump = true
 	air_control = false
 
 func get_strategy_name() -> String:
-	return "walk"
+	return MovementConstants.STRATEGY_WALK
 
 func handle_rotation(input_direction: Vector2, delta: float) -> void:
 	# Rotation is now handled centrally by MovementSystem to support strafe mode
@@ -20,12 +20,12 @@ func handle_rotation(input_direction: Vector2, delta: float) -> void:
 func can_transition_to(state_name: String) -> bool:
 	# Walking can transition to most states
 	return state_name in [
-		"idle",
-		"running",
-		"sprint",
-		"jumping",
-		"crouch_idle",
-		"crouch_move"
+		MovementConstants.STATE_IDLE,
+		MovementConstants.STATE_RUNNING,
+		MovementConstants.STATE_SPRINT,
+		MovementConstants.STATE_JUMPING,
+		MovementConstants.STATE_CROUCH_IDLE,
+		MovementConstants.STATE_CROUCH_MOVE
 	]
 
 func on_enter() -> void:

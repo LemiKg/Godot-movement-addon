@@ -5,13 +5,13 @@ extends MovementStrategy
 ## Implements the exact same jump calculations as the original system
 
 func _init():
-	speed = 5.0 # AIR_CONTROL_SPEED from original
-	acceleration = 20.0
+	speed = MovementConstants.AIR_CONTROL_SPEED
+	acceleration = MovementConstants.ACCELERATION_DEFAULT
 	can_jump = false # Already jumping
 	air_control = true
 
 func get_strategy_name() -> String:
-	return "jump"
+	return MovementConstants.STRATEGY_JUMP
 
 func calculate_movement(input_direction: Vector2, delta: float) -> Vector3:
 	if not player or not camera:
@@ -48,9 +48,9 @@ func handle_rotation(input_direction: Vector2, delta: float) -> void:
 
 func can_transition_to(state_name: String) -> bool:
 	# Jump can only transition to falling when velocity.y < 0
-	return state_name in ["falling"]
+	return state_name in [MovementConstants.STATE_FALLING]
 
 func on_enter() -> void:
 	# Emit event when entering jump state
 	if EnhancedEventBus.instance:
-		EnhancedEventBus.instance.jump_initiated.emit(4.5) # JUMP_VELOCITY from original
+		EnhancedEventBus.instance.jump_initiated.emit(MovementConstants.JUMP_VELOCITY)

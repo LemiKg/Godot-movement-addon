@@ -5,13 +5,13 @@ extends MovementStrategy
 ## Implements the exact same fall calculations as the original system
 
 func _init():
-	speed = 5.0 # FALLING_AIR_CONTROL_SPEED from original
-	acceleration = 20.0
+	speed = MovementConstants.AIR_CONTROL_SPEED
+	acceleration = MovementConstants.ACCELERATION_DEFAULT
 	can_jump = false # Cannot jump while falling
 	air_control = true
 
 func get_strategy_name() -> String:
-	return "fall"
+	return MovementConstants.STRATEGY_FALL
 
 func calculate_movement(input_direction: Vector2, delta: float) -> Vector3:
 	if not player or not camera:
@@ -48,7 +48,7 @@ func handle_rotation(input_direction: Vector2, delta: float) -> void:
 
 func can_transition_to(state_name: String) -> bool:
 	# Fall can only transition to landing when hitting ground
-	return state_name in ["landing"]
+	return state_name in [MovementConstants.STATE_LANDING]
 
 func on_enter() -> void:
 	# Emit event when entering fall state
