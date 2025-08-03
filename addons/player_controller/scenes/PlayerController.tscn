@@ -83,6 +83,18 @@ script = ExtResource("2_8jx5t")
 
 [node name="MovementController" type="Node" parent="Components"]
 script = ExtResource("3_hm4qx")
+walk_speed = null
+run_speed = null
+sprint_speed = null
+crouch_speed = null
+jump_velocity = null
+acceleration = null
+rotation_speed = null
+gravity = null
+jump_air_control_speed = null
+falling_air_control_speed = null
+jump_buffer_time = null
+coyote_time = null
 
 [node name="CameraController" type="Node" parent="Components"]
 script = ExtResource("4_dc2p8")

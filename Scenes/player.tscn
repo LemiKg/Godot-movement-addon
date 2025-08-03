@@ -36,7 +36,7 @@ max_zoom_distance = 10.0
 zoom_speed = 2.0
 smooth_zoom = true
 zoom_smoothing = 8.0
-strafe_mode_enabled = false
+strafe_mode_enabled = true
 strafe_camera_tilt_amount = 5.0
 strafe_camera_smoothing = 10.0
 player_follows_camera = true
@@ -74,6 +74,18 @@ script = ExtResource("2_b26j0")
 
 [node name="MovementController" type="Node" parent="PlayerController/Components"]
 script = ExtResource("3_n7ghd")
+walk_speed = null
+run_speed = null
+sprint_speed = null
+crouch_speed = null
+jump_velocity = null
+acceleration = null
+rotation_speed = null
+gravity = null
+jump_air_control_speed = null
+falling_air_control_speed = null
+jump_buffer_time = null
+coyote_time = null
 
 [node name="CameraController" type="Node" parent="PlayerController/Components"]
 script = ExtResource("4_nvl01")

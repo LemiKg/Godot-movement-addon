@@ -238,12 +238,9 @@ func _handle_camera_input(mouse_delta: Vector2) -> void:
 		is_strafe_mode = _current_mode.is_strafe_mode_enabled()
 	
 	# Mouse delta already includes sensitivity from InputHandler
-	if is_strafe_mode and _current_mode.has_method("player_follows_camera") and _current_mode.player_follows_camera:
-		# In strafe mode with player following camera: apply horizontal rotation to camera pivot
-		camera_pivot.rotation.y -= mouse_delta.x
-	else:
-		# Normal mode: apply horizontal rotation (yaw) to the player
-		_player_controller.rotation.y -= mouse_delta.x
+	# Apply horizontal rotation (yaw) consistently - always to the player
+	# The movement controller will handle making the player skin follow the camera in strafe mode
+	_player_controller.rotation.y -= mouse_delta.x
 	
 	# Apply vertical rotation (pitch) to the camera pivot with limits
 	_accumulated_pitch += mouse_delta.y

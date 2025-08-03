@@ -112,20 +112,26 @@ func _apply_movement(delta: float, current_speed: float) -> void:
 func _update_rotation(delta: float) -> void:
 	# Check if we're in strafe mode using the proper method
 	var is_strafe_mode = _is_strafe_mode_enabled()
+	var skin = _player.get_node_or_null("Character") as Node3D
+	if not skin:
+		return
 	
-	# In strafe mode, player should always face camera direction
+	# In strafe mode, player skin should smoothly follow camera direction
 	if is_strafe_mode:
+		# Get camera forward direction in world space
 		var camera_forward = - _camera.global_basis.z.normalized()
+		camera_forward.y = 0.0 # Flatten to horizontal plane
+		camera_forward = camera_forward.normalized()
+		
+		# Calculate target angle from camera direction
 		var target_angle = Vector3.BACK.signed_angle_to(camera_forward, Vector3.UP)
-		var skin = _player.get_node_or_null("Character") as Node3D
-		if skin:
-			skin.global_rotation.y = lerp_angle(skin.global_rotation.y, target_angle, rotation_speed * delta)
+		
+		# Apply smooth rotation using the same lerp as normal mode
+		skin.global_rotation.y = lerp_angle(skin.global_rotation.y, target_angle, rotation_speed * delta)
 	# Normal mode: rotate based on movement direction
 	elif _current_movement_direction.length() > 0.2:
 		var target_angle := Vector3.BACK.signed_angle_to(_last_movement_direction, Vector3.UP)
-		var skin = _player.get_node_or_null("Character") as Node3D
-		if skin:
-			skin.global_rotation.y = lerp_angle(skin.global_rotation.y, target_angle, rotation_speed * delta)
+		skin.global_rotation.y = lerp_angle(skin.global_rotation.y, target_angle, rotation_speed * delta)
 
 func request_jump() -> void:
 	_jump_buffer_timer = jump_buffer_time
