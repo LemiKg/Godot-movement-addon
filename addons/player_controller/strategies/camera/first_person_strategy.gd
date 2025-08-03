@@ -13,9 +13,12 @@ func handle_input(mouse_delta: Vector2, delta: float) -> void:
 	if not spring_arm or not camera:
 		return
 	
+	# Apply inversion settings from base class
+	var adjusted_delta = apply_mouse_input(mouse_delta)
+	
 	# Same rotation calculation as original
-	_rotation.y -= mouse_delta.x * sensitivity
-	_rotation.x -= mouse_delta.y * sensitivity
+	_rotation.y -= adjusted_delta.x * sensitivity
+	_rotation.x += adjusted_delta.y * sensitivity
 	
 	# Clamp pitch (same as original)
 	_rotation.x = clamp(_rotation.x, -30.0, 60.0)

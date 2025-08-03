@@ -20,6 +20,8 @@ signal camera_mode_changed(mode_name: String)
 	set(value):
 		pitch_limit_down = clamp(value, 0.0, 89.0)
 @export var sensitivity: float = 2.0
+@export var invert_horizontal: bool = false
+@export var invert_vertical: bool = true
 @export var zoom_speed: float = 2.0
 @export var min_zoom: float = 2.0
 @export var max_zoom: float = 10.0
@@ -108,6 +110,8 @@ func _setup_strategies() -> void:
 		strategy.initialize(_spring_arm, _camera, _player)
 		# Apply configurable parameters
 		strategy.sensitivity = sensitivity
+		strategy.invert_horizontal = invert_horizontal
+		strategy.invert_vertical = invert_vertical
 		strategy.zoom_speed = zoom_speed
 		strategy.min_zoom = min_zoom
 		strategy.max_zoom = max_zoom

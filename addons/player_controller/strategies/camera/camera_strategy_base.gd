@@ -10,6 +10,8 @@ var player: CharacterBody3D
 
 # Camera parameters
 var sensitivity: float = 2.0
+var invert_horizontal: bool = false
+var invert_vertical: bool = false
 var zoom_speed: float = 2.0
 var min_zoom: float = 2.0
 var max_zoom: float = 10.0
@@ -47,3 +49,12 @@ func apply_camera_settings() -> void:
 	# Apply common camera settings
 	if spring_arm:
 		spring_arm.spring_length = clamp(spring_arm.spring_length, min_zoom, max_zoom)
+
+func apply_mouse_input(mouse_delta: Vector2) -> Vector2:
+	# Apply inversion settings to mouse input
+	var adjusted_delta = mouse_delta
+	if invert_horizontal:
+		adjusted_delta.x = - adjusted_delta.x
+	if invert_vertical:
+		adjusted_delta.y = - adjusted_delta.y
+	return adjusted_delta

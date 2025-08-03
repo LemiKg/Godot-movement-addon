@@ -54,6 +54,7 @@ script = ExtResource("3_input")
 
 [node name="CameraSystem" type="Node" parent="Systems"]
 script = ExtResource("4_camera")
+invert_vertical = true
 strafe_mode_enabled = true
 
 [node name="StateMachine" type="Node" parent="Systems"]
