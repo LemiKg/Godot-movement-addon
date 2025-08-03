@@ -1,0 +1,109 @@
+[gd_scene load_steps=10 format=3 uid="uid://br6k5ly0d7nn7"]
+
+[ext_resource type="PackedScene" uid="uid://cddcm43bv52n4" path="res://Assets/models/Tree.glb" id="2_3anf8"]
+[ext_resource type="PackedScene" uid="uid://4osqugrgs8h8" path="res://Scenes/player.tscn" id="2_fhqol"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_w77jt"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_3anf8"]
+sky_material = SubResource("ProceduralSkyMaterial_w77jt")
+
+[sub_resource type="Environment" id="Environment_fhqol"]
+background_mode = 2
+sky = SubResource("Sky_3anf8")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fhqol"]
+albedo_color = Color(0.161058, 0.246362, 0.299851, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a4eo7"]
+albedo_color = Color(0.349966, 0.256375, 0.0755411, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3anf8"]
+albedo_color = Color(0.34902, 0.254902, 0.0745098, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w77jt"]
+albedo_color = Color(0.300185, 0.409914, 0.0832093, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_fhqol")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(1.51999, 0, 0, 0, 1.51999, 0, 0, 0, 1.51999, -3.53312, 2.08155, -0.0052914)
+use_collision = true
+size = Vector3(1, 0.171997, 1.86328)
+material = SubResource("StandardMaterial3D_fhqol")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(1.51999, 0, 0, 0, 1.51999, 0, 0, 0, 1.51999, -5.76128, 2.08155, -0.0052914)
+use_collision = true
+size = Vector3(1, 0.171997, 1.86328)
+material = SubResource("StandardMaterial3D_fhqol")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(1.51999, 0, 0, 0, 1.51999, 0, 0, 0, 1.51999, -7.90755, 2.08155, -0.0052914)
+use_collision = true
+size = Vector3(1, 0.171997, 1.86328)
+material = SubResource("StandardMaterial3D_fhqol")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(1.51999, 0, 0, 0, 1.51999, 0, 0, 0, 1.51999, -10.0439, 2.08155, -0.0052914)
+use_collision = true
+size = Vector3(1, 0.171997, 1.86328)
+material = SubResource("StandardMaterial3D_fhqol")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(1.51999, 0, 0, 0, 1.51999, 0, 0, 0, 1.51999, -12.2721, 2.08155, -0.0052914)
+use_collision = true
+size = Vector3(1, 0.171997, 1.86328)
+material = SubResource("StandardMaterial3D_fhqol")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(1.51999, 0, 0, 0, 1.51999, 0, 0, 0, 1.51999, -14.4183, 2.08155, -0.0052914)
+use_collision = true
+size = Vector3(1, 0.171997, 1.86328)
+material = SubResource("StandardMaterial3D_fhqol")
+
+[node name="Platforms" type="Node3D" parent="."]
+
+[node name="Platform 1" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(4.08306, 0, 0, 0, 4.08306, 0, 0, 0, 4.08306, 4.08306, 0, 0)
+use_collision = true
+size = Vector3(3, 1, 1)
+material = SubResource("StandardMaterial3D_a4eo7")
+
+[node name="Platform 2" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(4.66583, 0, 0, 0, 4.66583, 0, 0, 0, 4.66583, -18.2716, 0, 0)
+use_collision = true
+material = SubResource("StandardMaterial3D_a4eo7")
+
+[node name="Platform 4" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(4.66583, 0, 0, 0, 4.35335, -1.67877, 0, 1.67877, 4.35335, -18.2716, 3.75571, -6.68873)
+use_collision = true
+size = Vector3(1, 0.2052, 2.47168)
+material = SubResource("StandardMaterial3D_3anf8")
+
+[node name="Platform 3" type="CSGBox3D" parent="Platforms"]
+transform = Transform3D(4.66583, 0, 0, 0, 4.66583, 0, 0, 0, 4.66583, -6.60706, 5.72464, -26.0795)
+use_collision = true
+size = Vector3(6, 0.235596, 6.07837)
+material = SubResource("StandardMaterial3D_w77jt")
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="Tree" parent="Props" instance=ExtResource("2_3anf8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.22857, 6.27427, -15.0218)
+
+[node name="Node3D2" parent="." instance=ExtResource("2_fhqol")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.45859, 0)

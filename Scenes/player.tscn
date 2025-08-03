@@ -1,0 +1,145 @@
+[gd_scene load_steps=14 format=3 uid="uid://4osqugrgs8h8"]
+
+[ext_resource type="Script" uid="uid://bgmxb11braos2" path="res://addons/player_controller/scripts/player_controller.gd" id="1_onrkg"]
+[ext_resource type="Script" uid="uid://k2e5djr533am" path="res://addons/player_controller/scripts/components/input_handler.gd" id="2_b26j0"]
+[ext_resource type="Script" uid="uid://dcpqpsgbr55dv" path="res://addons/player_controller/scripts/components/animation_controller.gd" id="2_i3pqv"]
+[ext_resource type="Script" uid="uid://bs4llwmdwf13f" path="res://addons/player_controller/scripts/components/movement_controller.gd" id="3_n7ghd"]
+[ext_resource type="Script" uid="uid://doox6aew0kn2q" path="res://addons/player_controller/scripts/components/camera_controller.gd" id="4_nvl01"]
+[ext_resource type="Script" uid="uid://cggyxjctbwma0" path="res://addons/player_controller/scripts/components/first_person_mode.gd" id="5_ivps1"]
+[ext_resource type="Script" uid="uid://bk7o3wutqk5wi" path="res://addons/player_controller/scripts/components/third_person_mode.gd" id="6_urp6f"]
+[ext_resource type="Script" uid="uid://bcdaa4lpj3kvk" path="res://addons/player_controller/scripts/components/state_manager.gd" id="8_bwjto"]
+[ext_resource type="PackedScene" uid="uid://ch7n2oqwo36pl" path="res://Assets/models/Character/AnimationLibrary_Godot_Standard.glb" id="9_606se"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u1c27"]
+height = 1.8
+
+[sub_resource type="Resource" id="Resource_op7ga"]
+script = ExtResource("5_ivps1")
+eye_height = 1.6
+fov = 90.0
+head_bob_enabled = true
+head_bob_amplitude = 0.05
+head_bob_frequency = 2.0
+metadata/_custom_type_script = "uid://cggyxjctbwma0"
+
+[sub_resource type="Resource" id="Resource_q13i1"]
+script = ExtResource("6_urp6f")
+camera_distance = 5.0
+camera_height = 1.0
+camera_side_offset = 0.5
+fov = 75.0
+collision_mask = 1
+smooth_position = true
+position_smoothing = 10.0
+metadata/_custom_type_script = "uid://bk7o3wutqk5wi"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_pylmc"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="PlayerController" type="CharacterBody3D" parent="." node_paths=PackedStringArray("camera_pivot", "camera", "skin", "animation_tree", "collision_shape")]
+script = ExtResource("1_onrkg")
+camera_pivot = NodePath("CameraPivot")
+camera = NodePath("CameraPivot/SpringArm3D/Camera3D")
+skin = NodePath("Character/AnimationLibrary_Godot_Standard")
+animation_tree = NodePath("AnimationTree")
+collision_shape = NodePath("CollisionShape3D")
+metadata/_custom_type_script = "uid://bgmxb11braos2"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerController"]
+shape = SubResource("CapsuleShape3D_u1c27")
+
+[node name="CameraPivot" type="Node3D" parent="PlayerController"]
+transform = Transform3D(1, 0, 0, 0, 0.940026, 0.341102, 0, -0.341102, 0.940026, 0, 1.5, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="PlayerController/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, 0)
+spring_length = 5.0
+
+[node name="Camera3D" type="Camera3D" parent="PlayerController/CameraPivot/SpringArm3D"]
+
+[node name="Components" type="Node" parent="PlayerController"]
+
+[node name="InputHandler" type="Node" parent="PlayerController/Components"]
+script = ExtResource("2_b26j0")
+
+[node name="MovementController" type="Node" parent="PlayerController/Components"]
+script = ExtResource("3_n7ghd")
+
+[node name="CameraController" type="Node" parent="PlayerController/Components"]
+script = ExtResource("4_nvl01")
+first_person_mode = SubResource("Resource_op7ga")
+third_person_mode = SubResource("Resource_q13i1")
+
+[node name="AnimationController" type="Node" parent="PlayerController/Components"]
+script = ExtResource("2_i3pqv")
+enable_debug_logging = true
+
+[node name="StateManager" type="Node" parent="PlayerController/Components"]
+script = ExtResource("8_bwjto")
+
+[node name="Character" type="Node3D" parent="PlayerController"]
+
+[node name="AnimationLibrary_Godot_Standard" parent="PlayerController/Character" instance=ExtResource("9_606se")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.943961, 0)
+
+[node name="Skeleton3D" parent="PlayerController/Character/AnimationLibrary_Godot_Standard/Rig" index="0"]
+bones/1/position = Vector3(-0.0185835, 0.049802, 0.870641)
+bones/1/rotation = Quaternion(0.789947, 0.0267097, -0.00598309, 0.612564)
+bones/3/rotation = Quaternion(-0.0410601, 0.0100366, 0.00706639, 0.999081)
+bones/4/rotation = Quaternion(0.10873, 0.028141, -0.0186987, 0.993497)
+bones/5/rotation = Quaternion(0.0382233, -0.0165032, 0.0179155, 0.998972)
+bones/6/rotation = Quaternion(-0.0347839, -0.0136714, 0.0200165, 0.999101)
+bones/7/rotation = Quaternion(-0.618499, -0.318428, -0.329179, 0.638517)
+bones/8/rotation = Quaternion(-0.297361, 0.656447, -0.538978, 0.43607)
+bones/9/rotation = Quaternion(0.270684, 0.0309705, -0.0604461, 0.960269)
+bones/10/rotation = Quaternion(0.0971968, 0.0157107, -0.0111538, 0.995079)
+bones/11/rotation = Quaternion(0.445191, 0.549369, -0.445194, 0.549364)
+bones/12/rotation = Quaternion(0.623342, -3.89753e-07, 1.98764e-07, 0.78195)
+bones/13/rotation = Quaternion(0.623342, -1.5126e-07, -2.63812e-07, 0.78195)
+bones/14/rotation = Quaternion(0.43209, 0.5387, -0.458046, 0.559727)
+bones/15/rotation = Quaternion(0.623341, 0.000943292, 0.00118354, 0.781949)
+bones/16/rotation = Quaternion(0.623341, -0.000704269, -0.000883369, 0.781949)
+bones/17/rotation = Quaternion(0.504057, 0.511542, -0.435152, 0.543042)
+bones/18/rotation = Quaternion(0.623163, -0.0200616, 0.0149255, 0.781692)
+bones/19/rotation = Quaternion(0.623341, 0.000379916, 0.000476517, 0.78195)
+bones/20/rotation = Quaternion(0.43534, 0.541356, -0.454904, 0.557203)
+bones/21/rotation = Quaternion(0.623341, 7.28792e-06, 9.38929e-06, 0.78195)
+bones/22/rotation = Quaternion(0.623342, -0.000665092, -0.00083438, 0.781949)
+bones/23/rotation = Quaternion(0.290838, 0.949649, 0.114584, 0.0212171)
+bones/24/rotation = Quaternion(0.21939, 0.0238026, -0.00530494, 0.975332)
+bones/25/rotation = Quaternion(0.687388, -0.000309217, -0.000444289, 0.72629)
+bones/26/rotation = Quaternion(-0.604021, 0.345103, 0.356718, 0.623551)
+bones/27/rotation = Quaternion(-0.0643885, -0.614444, 0.663103, 0.422619)
+bones/28/rotation = Quaternion(0.339343, 0.19303, 0.032058, 0.920086)
+bones/29/rotation = Quaternion(0.152187, -0.0128846, 0.0103666, 0.988213)
+bones/30/rotation = Quaternion(0.44519, -0.549369, 0.445194, 0.549365)
+bones/31/rotation = Quaternion(0.623342, -1.68375e-07, 3.77301e-08, 0.78195)
+bones/32/rotation = Quaternion(0.623342, -3.28724e-07, 1.16721e-07, 0.781949)
+bones/33/rotation = Quaternion(0.43209, -0.5387, 0.458047, 0.559727)
+bones/34/rotation = Quaternion(0.623341, -0.000943379, -0.00118372, 0.781949)
+bones/35/rotation = Quaternion(0.623341, 0.000704253, 0.000883413, 0.781949)
+bones/36/rotation = Quaternion(0.504057, -0.511541, 0.435152, 0.543042)
+bones/37/rotation = Quaternion(0.623163, 0.0200614, -0.0149258, 0.781692)
+bones/38/rotation = Quaternion(0.623342, -0.000379868, -0.000476245, 0.781949)
+bones/39/rotation = Quaternion(0.435339, -0.541356, 0.454904, 0.557203)
+bones/40/rotation = Quaternion(0.623342, -7.72691e-06, -9.3728e-06, 0.78195)
+bones/41/rotation = Quaternion(0.623341, 0.000664871, 0.00083444, 0.781949)
+bones/42/rotation = Quaternion(-0.290838, 0.949649, 0.114584, -0.0212171)
+bones/43/rotation = Quaternion(0.219391, -0.0238026, 0.00530474, 0.975332)
+bones/44/rotation = Quaternion(0.687388, 0.000309107, 0.000444528, 0.72629)
+bones/45/rotation = Quaternion(0.937247, 0.0238316, -0.00293837, 0.347837)
+bones/46/rotation = Quaternion(0.121148, 0.00191491, -0.000243373, 0.992633)
+bones/47/rotation = Quaternion(-0.595536, 0.0110636, 0.0182909, 0.803044)
+bones/48/rotation = Quaternion(-0.000137176, 0.964307, -0.264787, -0.000499407)
+bones/49/rotation = Quaternion(0.99828, 0.0332218, -0.00409615, -0.048133)
+bones/50/rotation = Quaternion(0.159641, 0.00324485, -0.000534459, 0.98717)
+bones/51/rotation = Quaternion(-0.511895, 0.0187164, -0.0171235, 0.858673)
+bones/52/rotation = Quaternion(0.0155933, 0.834977, -0.550063, -0.00117202)
+
+[node name="AnimationTree" type="AnimationTree" parent="PlayerController"]
+root_node = NodePath("../Character/AnimationLibrary_Godot_Standard")
+tree_root = SubResource("AnimationNodeStateMachine_pylmc")
+anim_player = NodePath("../Character/AnimationLibrary_Godot_Standard/AnimationPlayer")
+
+[editable path="PlayerController/Character/AnimationLibrary_Godot_Standard"]
