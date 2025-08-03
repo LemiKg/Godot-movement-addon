@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1r6aedblx6cj"]
+
+[ext_resource type="PackedScene" uid="uid://c3gddgvka71e3" path="res://addons/player_controller/scenes/EnhancedPlayerController.tscn" id="1_b30ec"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="EnhancedPlayerController" parent="." instance=ExtResource("1_b30ec")]

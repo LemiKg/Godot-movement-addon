@@ -1,0 +1,60 @@
+[gd_scene load_steps=10 format=3 uid="uid://c3gddgvka71e3"]
+
+[ext_resource type="Script" uid="uid://cii1frvsca2t1" path="res://addons/player_controller/components/enhanced_player_controller.gd" id="1_enhanced"]
+[ext_resource type="Script" uid="uid://hhb1q02gpg0t" path="res://addons/player_controller/systems/movement_system.gd" id="2_movement"]
+[ext_resource type="Script" uid="uid://bsjwal35rkkm5" path="res://addons/player_controller/systems/input_system.gd" id="3_input"]
+[ext_resource type="Script" uid="uid://bo0q85sd0yjug" path="res://addons/player_controller/systems/camera_system.gd" id="4_camera"]
+[ext_resource type="Script" uid="uid://dnyr68n1ypo2w" path="res://addons/player_controller/systems/state_machine.gd" id="5_state"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_1"]
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_enhanced"]
+albedo_color = Color(0.2, 0.6, 0.9, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_enhanced"]
+material = SubResource("StandardMaterial3D_enhanced")
+
+[node name="EnhancedPlayerController" type="CharacterBody3D" node_paths=PackedStringArray("spring_arm", "camera", "character_mesh", "collision_shape")]
+script = ExtResource("1_enhanced")
+spring_arm = NodePath("CameraPivot/SpringArm3D")
+camera = NodePath("CameraPivot/SpringArm3D/Camera3D")
+character_mesh = NodePath("Character")
+collision_shape = NodePath("CollisionShape3D")
+enable_debug_logging = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.940026, 0.341102, 0, -0.341102, 0.940026, 0, 1.5, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+spring_length = 5.0
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
+
+[node name="Character" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_1")
+
+[node name="Face" type="MeshInstance3D" parent="Character"]
+transform = Transform3D(0.4, 0, 0, 0, 0.15, 0, 0, 0, 0.2, 0, 0.4, 0.4)
+mesh = SubResource("BoxMesh_enhanced")
+
+[node name="Systems" type="Node" parent="."]
+
+[node name="MovementSystem" type="Node" parent="Systems"]
+script = ExtResource("2_movement")
+
+[node name="InputSystem" type="Node" parent="Systems"]
+script = ExtResource("3_input")
+
+[node name="CameraSystem" type="Node" parent="Systems"]
+script = ExtResource("4_camera")
+strafe_mode_enabled = true
+
+[node name="StateMachine" type="Node" parent="Systems"]
+script = ExtResource("5_state")

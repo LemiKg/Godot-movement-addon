@@ -46,12 +46,11 @@ metadata/_custom_type_script = "uid://bk7o3wutqk5wi"
 
 [node name="Node3D" type="Node3D"]
 
-[node name="PlayerController" type="CharacterBody3D" parent="." node_paths=PackedStringArray("camera_pivot", "camera", "skin", "animation_tree", "collision_shape")]
+[node name="PlayerController" type="CharacterBody3D" parent="." node_paths=PackedStringArray("camera_pivot", "camera", "skin", "collision_shape")]
 script = ExtResource("1_onrkg")
 camera_pivot = NodePath("CameraPivot")
 camera = NodePath("CameraPivot/SpringArm3D/Camera3D")
 skin = NodePath("Character/AnimationLibrary_Godot_Standard")
-animation_tree = NodePath("AnimationTree")
 collision_shape = NodePath("CollisionShape3D")
 metadata/_custom_type_script = "uid://bgmxb11braos2"
 
@@ -74,18 +73,6 @@ script = ExtResource("2_b26j0")
 
 [node name="MovementController" type="Node" parent="PlayerController/Components"]
 script = ExtResource("3_n7ghd")
-walk_speed = null
-run_speed = null
-sprint_speed = null
-crouch_speed = null
-jump_velocity = null
-acceleration = null
-rotation_speed = null
-gravity = null
-jump_air_control_speed = null
-falling_air_control_speed = null
-jump_buffer_time = null
-coyote_time = null
 
 [node name="CameraController" type="Node" parent="PlayerController/Components"]
 script = ExtResource("4_nvl01")
