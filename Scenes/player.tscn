@@ -31,11 +31,15 @@ fov = 75.0
 collision_mask = 1
 smooth_position = true
 position_smoothing = 10.0
-min_zoom_distance = null
-max_zoom_distance = null
-zoom_speed = null
-smooth_zoom = null
-zoom_smoothing = null
+min_zoom_distance = 2.0
+max_zoom_distance = 10.0
+zoom_speed = 2.0
+smooth_zoom = true
+zoom_smoothing = 8.0
+strafe_mode_enabled = false
+strafe_camera_tilt_amount = 5.0
+strafe_camera_smoothing = 10.0
+player_follows_camera = true
 metadata/_custom_type_script = "uid://bk7o3wutqk5wi"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_pylmc"]
@@ -58,7 +62,7 @@ shape = SubResource("CapsuleShape3D_u1c27")
 transform = Transform3D(1, 0, 0, 0, 0.940026, 0.341102, 0, -0.341102, 0.940026, 0, 1.5, 0)
 
 [node name="SpringArm3D" type="SpringArm3D" parent="PlayerController/CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.60734e-07, 0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8026e-45, 0.5, 0)
 spring_length = 5.0
 
 [node name="Camera3D" type="Camera3D" parent="PlayerController/CameraPivot/SpringArm3D"]

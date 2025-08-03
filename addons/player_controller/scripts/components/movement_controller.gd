@@ -33,10 +33,12 @@ var _current_speed_modifier := 1.0
 
 var _player: CharacterBody3D
 var _camera: Camera3D
+var _camera_controller: Node # Reference to camera controller for strafe mode checking
 
-func initialize(player: CharacterBody3D, camera: Camera3D) -> void:
+func initialize(player: CharacterBody3D, camera: Camera3D, camera_controller: Node = null) -> void:
 	_player = player
 	_camera = camera
+	_camera_controller = camera_controller
 
 func process_movement(_delta: float, input_direction: Vector2, current_speed: float) -> void:
 	_update_timers(_delta)
@@ -63,15 +65,37 @@ func _apply_gravity(delta: float) -> void:
 func _calculate_movement_direction(raw_input: Vector2) -> void:
 	if not _camera:
 		return
-		
-	var forward := _camera.global_basis.z.normalized()
-	var right := _camera.global_basis.x.normalized()
-	var move_direction := forward * raw_input.y + right * raw_input.x
-	move_direction.y = 0.0
-	_current_movement_direction = move_direction.normalized()
 	
-	if _current_movement_direction.length() > 0.2:
-		_last_movement_direction = _current_movement_direction
+	# Check if strafe mode is enabled
+	var is_strafe_mode = _is_strafe_mode_enabled()
+	
+	if is_strafe_mode:
+		# In strafe mode: forward/back relative to camera, left/right is strafing
+		var forward := _camera.global_basis.z.normalized()
+		var right := _camera.global_basis.x.normalized()
+		var move_direction := forward * raw_input.y + right * raw_input.x
+		move_direction.y = 0.0
+		_current_movement_direction = move_direction.normalized()
+		
+		# In strafe mode, don't update last movement direction for player rotation
+		# Player should always face camera direction
+		if _current_movement_direction.length() > 0.2:
+			# Only update forward direction, not the actual movement direction
+			_last_movement_direction = - _camera.global_basis.z.normalized()
+		
+		# Send strafe input to camera for tilt effect
+		if _camera_controller and _camera_controller.has_method("handle_strafe_input"):
+			_camera_controller.handle_strafe_input(raw_input)
+	else:
+		# Normal mode: movement relative to camera direction
+		var forward := _camera.global_basis.z.normalized()
+		var right := _camera.global_basis.x.normalized()
+		var move_direction := forward * raw_input.y + right * raw_input.x
+		move_direction.y = 0.0
+		_current_movement_direction = move_direction.normalized()
+		
+		if _current_movement_direction.length() > 0.2:
+			_last_movement_direction = _current_movement_direction
 	
 	movement_direction_changed.emit(_current_movement_direction)
 
@@ -86,7 +110,18 @@ func _apply_movement(delta: float, current_speed: float) -> void:
 	# Don't call move_and_slide here - let the player script handle it
 
 func _update_rotation(delta: float) -> void:
-	if _current_movement_direction.length() > 0.2:
+	# Check if we're in strafe mode using the proper method
+	var is_strafe_mode = _is_strafe_mode_enabled()
+	
+	# In strafe mode, player should always face camera direction
+	if is_strafe_mode:
+		var camera_forward = - _camera.global_basis.z.normalized()
+		var target_angle = Vector3.BACK.signed_angle_to(camera_forward, Vector3.UP)
+		var skin = _player.get_node_or_null("Character") as Node3D
+		if skin:
+			skin.global_rotation.y = lerp_angle(skin.global_rotation.y, target_angle, rotation_speed * delta)
+	# Normal mode: rotate based on movement direction
+	elif _current_movement_direction.length() > 0.2:
 		var target_angle := Vector3.BACK.signed_angle_to(_last_movement_direction, Vector3.UP)
 		var skin = _player.get_node_or_null("Character") as Node3D
 		if skin:
@@ -141,3 +176,19 @@ func get_input_direction() -> Vector2:
 	if _current_movement_direction.length() > 0:
 		return Vector2(_current_movement_direction.x, _current_movement_direction.z)
 	return Vector2.ZERO
+
+func _is_strafe_mode_enabled() -> bool:
+	"""Check if strafe mode is enabled in the current camera mode"""
+	if not _camera_controller:
+		return false
+	
+	# Get current camera mode
+	var current_mode = null
+	if _camera_controller.has_method("get_current_mode"):
+		current_mode = _camera_controller.get_current_mode()
+	
+	# Check if it's third person mode with strafe enabled
+	if current_mode and current_mode.has_method("is_strafe_mode_enabled"):
+		return current_mode.is_strafe_mode_enabled()
+	
+	return false

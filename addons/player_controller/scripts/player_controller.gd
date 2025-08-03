@@ -38,7 +38,9 @@ func _ready() -> void:
 
 func _setup_components() -> void:
 	# Initialize all components with required references
-	if movement_controller:
+	if movement_controller and camera_controller:
+		movement_controller.initialize(self, camera, camera_controller)
+	elif movement_controller:
 		movement_controller.initialize(self, camera)
 	
 	# Camera controller is now self-initializing in _ready()

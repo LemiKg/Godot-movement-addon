@@ -15,6 +15,7 @@ signal interact_requested
 signal mouse_mode_toggle_requested
 signal camera_mode_toggle_requested
 signal zoom_requested(zoom_direction: float)
+signal strafe_mode_toggle_requested
 
 @export_group("Input Settings")
 @export var mouse_sensitivity := 2.0: ## Mouse sensitivity multiplier. Higher values = faster camera movement
@@ -116,6 +117,11 @@ func _handle_action_input() -> void:
 	if InputMap.has_action("toggle_camera_mode"):
 		if Input.is_action_just_pressed("toggle_camera_mode"):
 			camera_mode_toggle_requested.emit()
+	
+	# Strafe mode toggle (optional input action)
+	if InputMap.has_action("toggle_strafe_mode"):
+		if Input.is_action_just_pressed("toggle_strafe_mode"):
+			strafe_mode_toggle_requested.emit()
 
 func _handle_camera_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:

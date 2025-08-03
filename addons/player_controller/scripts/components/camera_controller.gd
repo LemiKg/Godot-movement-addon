@@ -90,6 +90,8 @@ func _ready() -> void:
 		_input_handler.camera_mode_toggle_requested.connect(_toggle_camera_mode)
 		_input_handler.camera_input.connect(_handle_camera_input)
 		_input_handler.zoom_requested.connect(_handle_zoom_input)
+		_input_handler.strafe_mode_toggle_requested.connect(_toggle_strafe_mode)
+		_input_handler.movement_input_changed.connect(_handle_movement_input)
 
 func _physics_process(delta: float) -> void:
 	if not _current_mode or not _spring_arm or not _camera:
@@ -202,8 +204,17 @@ func get_current_mode_name() -> String:
 			return mode_name
 	return ""
 
+func get_current_mode() -> CameraStrategy:
+	"""Get the current camera mode"""
+	return _current_mode
+
 func set_camera_mode(mode_name: String) -> void:
 	_set_camera_mode(mode_name, true)
+
+func handle_strafe_input(input_direction: Vector2) -> void:
+	"""Pass movement input to current mode for strafe handling"""
+	if _current_mode and _current_mode.has_method("handle_strafe_input"):
+		_current_mode.handle_strafe_input(input_direction)
 
 func _handle_camera_input(mouse_delta: Vector2) -> void:
 	# Apply rotation immediately instead of accumulating
@@ -221,9 +232,18 @@ func _handle_camera_input(mouse_delta: Vector2) -> void:
 		push_warning("Player controller not available for camera input handling")
 		return
 	
+	# Check if current mode is in strafe mode
+	var is_strafe_mode = false
+	if _current_mode and _current_mode.has_method("is_strafe_mode_enabled"):
+		is_strafe_mode = _current_mode.is_strafe_mode_enabled()
+	
 	# Mouse delta already includes sensitivity from InputHandler
-	# Apply horizontal rotation (yaw) to the player
-	_player_controller.rotation.y -= mouse_delta.x
+	if is_strafe_mode and _current_mode.has_method("player_follows_camera") and _current_mode.player_follows_camera:
+		# In strafe mode with player following camera: apply horizontal rotation to camera pivot
+		camera_pivot.rotation.y -= mouse_delta.x
+	else:
+		# Normal mode: apply horizontal rotation (yaw) to the player
+		_player_controller.rotation.y -= mouse_delta.x
 	
 	# Apply vertical rotation (pitch) to the camera pivot with limits
 	_accumulated_pitch += mouse_delta.y
@@ -236,6 +256,17 @@ func _handle_zoom_input(zoom_direction: float) -> void:
 	# Only handle zoom for camera modes that support it
 	if _current_mode and _current_mode.has_method("handle_zoom"):
 		_current_mode.handle_zoom(zoom_direction)
+
+func _toggle_strafe_mode() -> void:
+	# Toggle strafe mode for third person camera
+	if _current_mode and _current_mode.has_method("set_strafe_mode"):
+		var current_strafe_state = _current_mode.is_strafe_mode_enabled() if _current_mode.has_method("is_strafe_mode_enabled") else false
+		_current_mode.set_strafe_mode(not current_strafe_state)
+
+func _handle_movement_input(input_direction: Vector2) -> void:
+	# Pass movement input to current mode for strafe handling
+	if _current_mode and _current_mode.has_method("handle_strafe_input"):
+		_current_mode.handle_strafe_input(input_direction)
 
 # Legacy compatibility methods for existing code
 func get_camera() -> Camera3D:
